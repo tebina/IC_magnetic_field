@@ -6,3 +6,5 @@
 **Voltage_parser :** parse probing analysis data , plot voltage graphs , calculate current for each segment , plot current
 
 **MagneticFieldGen :** calculate magnetic field for each segment and sums the results, plot positive/negative/total magnetic field
+
+**utils :** utility functions
