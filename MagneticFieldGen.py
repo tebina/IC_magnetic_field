@@ -37,19 +37,6 @@ def MagneticField(x,y,xA,xB,yA,yB,current):
     return Bfield
 
 
-def test_field ():
-#    x=np.arange(0,40*(10**(-6)),10**(-6))
-#    y=np.arange(0,40*(10**(-6)),10**(-6))
-    x=np.linspace(0,60,200)
-    y=np.linspace(0,60,200)
-    X,Y = np.meshgrid(x,y)
-
-    Mag2 = MagneticField(X,Y,10,30,10,50,10*10**(-5))
-    plt.pcolor(Mag2)
-    
-    return Mag
-
-
 
 
 def TotalField(current_idx):
@@ -71,8 +58,8 @@ def TotalField(current_idx):
 #    x = np.linspace(0,1600,200)
 #    y = np.linspace(0,1600,200)
     X,Y = np.meshgrid(x,y)
-    #wire = probe_generator_no_edge(40 , 'AES.def' , 'vdd')
-    wire=gridPlot('vdd','AES.def')
+    #wire=gridPlot('vdd','AES.def')
+    wire=probe_generator_segmented(201,'AES.def','vdd')
     xA,yA,xB,yB = [] ,[] , [], []
     xAn = wire [0][0]
     xBn = wire [0][1]
@@ -84,8 +71,9 @@ def TotalField(current_idx):
         xB.append(iii*10**(-9))
         yB.append(iiii*10**(-9))
     #print ([xA,xB])
-    current = Current('FULL_AES_Voltage_probe.txt','FULL_AES_VOLTAGE_PROBE.dump_pwl','FULL_AES_Resistance_probe.txt','FULL_AES_RESISTANCE_PROBE.effr')
+    #current = Current('FULL_AES_Voltage_probe.txt','FULL_AES_VOLTAGE_PROBE.dump_pwl','FULL_AES_Resistance_probe.txt','FULL_AES_RESISTANCE_PROBE.effr')
     #current = Current('Voltage_probe.txt','tran_vdd.ptiavg123.dump_pwl','Resistance_probe.txt','effr123.rpt')
+    current = Current('FULL_AES_Voltage_probe.txt','tran_vdd.ptiavg (7).dump_pwl','FULL_AES_Resistance_probe.txt','vdd (7).effr')
 
     Field = []
     Total_Field = []
@@ -138,8 +126,9 @@ def TotalField(current_idx):
         
         
     
-    mesh = plt.pcolormesh(X,Y,Total_Field,vmin=-0.0020711362266032877,vmax=0.0008987036599894155)#¼vmin = -7.631209166640852*10**(-16) , vmax = -1.1011600610714432*10**(-18))#vmin=-1*(10**(-4)), vmax=-1*(10**(9)))
-    mesh.set_clim(-0.00031837490375208625,8.478462110792762e-05)
+    mesh = plt.pcolormesh(X,Y,Total_Field)#,vmin=-0.007619674686794058,vmax=2.271323211355281e-06)#¼vmin = -7.631209166640852*10**(-16) , vmax = -1.1011600610714432*10**(-18))#vmin=-1*(10**(-4)), vmax=-1*(10**(9)))
+    mesh.set_clim(0,6.4900080667391687e-06)
+    #mesh.set_clim(0,4.271323211355281e-06)#-0.008619674686794058
     
     #plt.plot([xA,xB],[yA,yB])
     plt.colorbar()
