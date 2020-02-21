@@ -156,9 +156,9 @@ def probing_points(segments,text_file,net):
             
         #y_points_cord.append(y_points)
     
-    plt.figure(figsize=(12,12))
-    plt.plot (x_points, y_points,'ro')
-    plt.show()
+    #plt.figure(figsize=(12,12))
+    #plt.plot (x_points, y_points,'ro')
+    #plt.show()
 
     return x_points , y_points ,metal
 
@@ -186,52 +186,54 @@ def probe_generator (segments_per_line , text_file , net):
             #print ('START POINT',i, 'is ', x_coords[i]/1000)
         if ((i+1) % (segments_per_line-1) == 0):
             ff.write("%f %f %s SEGMENT%s\n" % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i]),str(i)))
-            
+            #print ('END POINT',i, 'is ', x_coords[i]/1000)
+
     ff.close    
     
     
-def probe_generator_no_edge (segments_per_line , text_file , net):
-    """ save the 1st and last point of each line as probing points for resistance and voltage
+           
+def probe_generator_segmented (segments_per_line , text_file , net):
     """
-    print ('reading segments coordinates . . .')
-
+    SEGMENTS PER LINE SHOULD BE A (MULTIPLE OF SEGMENTS PER LINE) + 1 
+    """
     temp = probing_points (segments_per_line , text_file , net)
     x_coords = temp [0]
     y_coords = temp [1]
     metal = temp [2]
-    start_x_cord = []
-    start_y_cord = []
-    end_x_cord = []
-    end_y_cord = []
+    start_x_coord = []
+    end_x_coord = []
+    start_y_coord = []
+    end_y_coord = []
     f = open ("FULL_AES_Voltage_probe.txt","w+")
     for i in range(0,len(x_coords)-1):
+        if (i % ((segments_per_line-1)/20) == 0):
+            f.write("Probe"+str(i)+" %f %f %s %s\n" % (x_coords[i]/1000,y_coords[i]/1000,metal[i],net))
+        if ((i+1) % ((segments_per_line-1)/20) == 0):
             f.write("Probe"+str(i)+" %f %f %s %s\n" % (x_coords[i]/1000,y_coords[i]/1000,metal[i],net))
         #for ii in range (1,segments_per_line):
            # print (x_coords[ii],y_coords[ii],metal[i])
     f.close
     ff = open ("FULL_AES_Resistance_probe.txt","w+")        
-    
-    for i in range(0,len(x_coords)-1):            
-        if (i % 2 == 0):
-            ff.write("%f %f %s " % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i])))
-            start_x_cord.append(x_coords[i])
-            start_y_cord.append(y_coords[i])
-            #print ('START POINT',i, 'is ', x_coords[i]/1000)
-        else:
+    print (len(x_coords))
+    for i in range(0,len(x_coords)-1):
+        if (i % ((segments_per_line-1)/20) == 0) : #`divide segment per 20
+            if (i != (len(x_coords)-10)): ##########
+                ff.write("%f %f %s " % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i])))
+                #print ('START POINT',i, 'is ', x_coords[i]/1000)
+                start_x_coord.append(x_coords[i])
+                start_y_coord.append(y_coords[i])
+        if ((i+1) % ((segments_per_line-1)/20) == 0):
             ff.write("%f %f %s SEGMENT%s\n" % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i]),str(i)))
-            end_x_cord.append(x_coords[i])
-            end_y_cord.append(y_coords[i])
-    ff.close
-
-   
+            #print ('END POINT',i, 'is ', x_coords[i]/1000)
+            end_x_coord.append(x_coords[i])
+            end_y_coord.append(y_coords[i])
+    ff.close    
+    x_values = [start_x_coord , end_x_coord]
+    y_values = [start_y_coord , end_y_coord]    
     
-    x_values = [start_x_cord , end_x_cord]
-    y_values = [start_y_cord , end_y_cord]
-    #plt.plot(x_values,y_values)
-    #print (len(start_x_cord))
-    return [x_values , y_values]
-    
+    #plt.figure(figsize=(12,12))
+    #plt.plot (x_values, y_values)
+    #plt.show()
+    return [x_values , y_values] 
        
-    
-    
     
