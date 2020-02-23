@@ -8,3 +8,5 @@
 **MagneticFieldGen.py :** calculate magnetic field for each segment and sums the results, plot positive/negative/total magnetic field
 
 **utils.py :** utility functions
+
+added **utils.py :** create animation gif of magnetic field evolution in the time domain
