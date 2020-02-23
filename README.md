@@ -9,4 +9,4 @@
 
 **utils.py :** utility functions
 
-added **utils.py :** create animation gif of magnetic field evolution in the time domain
+added **GIFmaker.py :** create animation gif of magnetic field evolution in the time domain
