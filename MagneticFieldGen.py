@@ -46,7 +46,7 @@ def TotalField(current_idx):
     end_gridx = 400*10**(-6)
     start_gridy = 0#-10*10**(-6)
     end_gridy = 400*10**(-6)
-    segments = 500
+    segments = 300
     
     x_delta = (end_gridx-start_gridx)/segments
     y_delta = (end_gridy-start_gridy)/segments
@@ -59,7 +59,7 @@ def TotalField(current_idx):
 #    y = np.linspace(0,1600,200)
     X,Y = np.meshgrid(x,y)
     #wire=gridPlot('vdd','AES.def')
-    wire=probe_generator_segmented(201,'AES.def','vdd')
+    wire=probe_generator_segmented(81,8,'AES.def','vdd')
     xA,yA,xB,yB = [] ,[] , [], []
     xAn = wire [0][0]
     xBn = wire [0][1]
@@ -73,7 +73,7 @@ def TotalField(current_idx):
     #print ([xA,xB])
     #current = Current('FULL_AES_Voltage_probe.txt','FULL_AES_VOLTAGE_PROBE.dump_pwl','FULL_AES_Resistance_probe.txt','FULL_AES_RESISTANCE_PROBE.effr')
     #current = Current('Voltage_probe.txt','tran_vdd.ptiavg123.dump_pwl','Resistance_probe.txt','effr123.rpt')
-    current = Current('FULL_AES_Voltage_probe.txt','tran_vdd.ptiavg (7).dump_pwl','FULL_AES_Resistance_probe.txt','vdd (7).effr')
+    current = Current('NEW_AES/FULL_AES_Voltage_probe.txt','NEW_AES/tran_vdd.ptiavg (8).dump_pwl','NEW_AES/FULL_AES_Resistance_probe.txt','NEW_AES/vdd (8).effr')
 
     Field = []
     Total_Field = []
@@ -125,15 +125,15 @@ def TotalField(current_idx):
         
         
         
+    plt.figure("total magnetic field",figsize=(12,14))
+    #mesh = plt.pcolormesh(X,Y,Total_Field)#,vmin=-0.007619674686794058,vmax=2.271323211355281e-06)#¼vmin = -7.631209166640852*10**(-16) , vmax = -1.1011600610714432*10**(-18))#vmin=-1*(10**(-4)), vmax=-1*(10**(9)))
     
-    mesh = plt.pcolormesh(X,Y,Total_Field)#,vmin=-0.007619674686794058,vmax=2.271323211355281e-06)#¼vmin = -7.631209166640852*10**(-16) , vmax = -1.1011600610714432*10**(-18))#vmin=-1*(10**(-4)), vmax=-1*(10**(9)))
-    mesh.set_clim(0,6.4900080667391687e-06)
-    #mesh.set_clim(0,4.271323211355281e-06)#-0.008619674686794058
     
-    #plt.plot([xA,xB],[yA,yB])
-    plt.colorbar()
-    plt.show()
-    #return [X,Y,Total_Field]
+    #mesh.set_clim(-0.0005665265102547159,0)
+    
+    #plt.colorbar()
+    #○plt.show()
+    return plt.pcolormesh(X,Y,positive_field,vmin=0,vmax=0.001396394568209751)#-0.0005665265102547159
 
 def plot_field():
     data1 = TotalField(63)

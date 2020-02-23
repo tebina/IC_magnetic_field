@@ -192,11 +192,11 @@ def probe_generator (segments_per_line , text_file , net):
     
     
            
-def probe_generator_segmented (segments_per_line , text_file , net):
+def probe_generator_segmented (points_per_line,segments_pre_line , text_file , net):
     """
-    SEGMENTS PER LINE SHOULD BE A (MULTIPLE OF SEGMENTS PER LINE) + 1 
+    points_per_line should be a (multiple of Segments_per_line)+1 
     """
-    temp = probing_points (segments_per_line , text_file , net)
+    temp = probing_points (points_per_line , text_file , net)
     x_coords = temp [0]
     y_coords = temp [1]
     metal = temp [2]
@@ -206,9 +206,9 @@ def probe_generator_segmented (segments_per_line , text_file , net):
     end_y_coord = []
     f = open ("FULL_AES_Voltage_probe.txt","w+")
     for i in range(0,len(x_coords)-1):
-        if (i % ((segments_per_line-1)/20) == 0):
+        if (i % ((points_per_line-1)/segments_pre_line) == 0):
             f.write("Probe"+str(i)+" %f %f %s %s\n" % (x_coords[i]/1000,y_coords[i]/1000,metal[i],net))
-        if ((i+1) % ((segments_per_line-1)/20) == 0):
+        if ((i+1) % ((points_per_line-1)/segments_pre_line) == 0):
             f.write("Probe"+str(i)+" %f %f %s %s\n" % (x_coords[i]/1000,y_coords[i]/1000,metal[i],net))
         #for ii in range (1,segments_per_line):
            # print (x_coords[ii],y_coords[ii],metal[i])
@@ -216,13 +216,13 @@ def probe_generator_segmented (segments_per_line , text_file , net):
     ff = open ("FULL_AES_Resistance_probe.txt","w+")        
     print (len(x_coords))
     for i in range(0,len(x_coords)-1):
-        if (i % ((segments_per_line-1)/20) == 0) : #`divide segment per 20
+        if (i % ((points_per_line-1)/segments_pre_line) == 0) : #`divide segment per 20
             if (i != (len(x_coords)-10)): ##########
                 ff.write("%f %f %s " % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i])))
                 #print ('START POINT',i, 'is ', x_coords[i]/1000)
                 start_x_coord.append(x_coords[i])
                 start_y_coord.append(y_coords[i])
-        if ((i+1) % ((segments_per_line-1)/20) == 0):
+        if ((i+1) % ((points_per_line-1)/segments_pre_line) == 0):
             ff.write("%f %f %s SEGMENT%s\n" % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i]),str(i)))
             #print ('END POINT',i, 'is ', x_coords[i]/1000)
             end_x_coord.append(x_coords[i])

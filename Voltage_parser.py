@@ -59,12 +59,6 @@ def vectors_def(source_file,probe_file):
         data_vect_out.append(data_vect)
     return time_vect_out,data_vect_out
 
-def d_plot(source_file,probe_file):
-    vect = vectors_def(source_file,probe_file)
-    time = vect[0]
-    data = vect[1]
-    plt.figure(figsize=(12,6))
-    plt.plot(time[0] , data[50] , lw=1 , color = 'red' , label= 'Magnetic Field')
     
 
 def Diff_Voltage (source_file,probe_file):
@@ -111,29 +105,35 @@ def res_parse(source_file,data_file):
 
 
 def Current (voltage_source_file,voltage_probe_file,res_source_file,res_probe_file):
-     print ('calculating current values . . .' )
      res = res_parse(res_source_file,res_probe_file)
      voltage = Diff_Voltage(voltage_source_file,voltage_probe_file)
      current = []
+     print ('calculating current values . . .' )
+
      for c,i in enumerate(voltage):
          current_temp = []
          for ii in i:
              current_temp.append(ii/float(res[c]))
          current.append(current_temp)
+     print ('there are ', len(current) ,' current waveforms')
+     print ('each waveform contains ', len(current[0]) ,' point')
      t=max(current[0]) 
      for c,i in enumerate(current[0]):
          if (i==t):
              max_idx = c 
-     print ('max_idx = ',max_idx)
+     print ('max current idx for waveform 0 is ',max_idx)
      print ('max_value = ',t)
 
      tt=min(current[0])
      for c,i in enumerate(current[0]):
          if (i==tt):
              min_idx = c 
-     print ('min_idx = ',min_idx)
-     #plt.plot (current[61])
+     print ('min current idx for waveform 0 is  = ',min_idx)
      print ('min_value = ',tt)
+
+     plt.figure("Current [0]")
+     plt.plot (current[0])
+     plt.show()
      return current
   
     
