@@ -5,23 +5,11 @@ Created on Wed Feb 12 11:24:38 2020
 @author: nasredine
 """
 import matplotlib.pyplot as plt
-import matplotlib.colors as m 
 from Stripe_parser import *
 from Voltage_parser import *
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.animation import FuncAnimation,FFMpegFileWriter
-import glob
-import os
 
 
-cdict = {
-  'red'  :  ( (0.0, 0.25, .25), (0.02, .59, .59), (1., 1., 1.)),
-  'green':  ( (0.0, 0.0, 0.0), (0.02, .45, .45), (1., .97, .97)),
-  'blue' :  ( (0.0, 1.0, 1.0), (0.02, .75, .75), (1., 0.45, 0.45))
-}
-
-cm = m.LinearSegmentedColormap('my_colormap', cdict, 1024)
 
 
 def MagneticField(x,y,xA,xB,yA,yB,current):
@@ -59,7 +47,7 @@ def TotalField(current_idx):
 #    y = np.linspace(0,1600,200)
     X,Y = np.meshgrid(x,y)
     #wire=gridPlot('vdd','AES.def')
-    wire=probe_generator_segmented(81,8,'AES.def','vdd')
+    wire=probe_generator_segmented(10,'AES.def','vdd')
     xA,yA,xB,yB = [] ,[] , [], []
     xAn = wire [0][0]
     xBn = wire [0][1]
@@ -121,39 +109,10 @@ def TotalField(current_idx):
         minn.append(min(i))
         maxx.append(max(i))
     print ('minimum B field is = ',min(minn) , ' max is = ', max(maxx))
-        
-        
-        
-        
     plt.figure("total magnetic field",figsize=(12,14))
-    #mesh = plt.pcolormesh(X,Y,Total_Field)#,vmin=-0.007619674686794058,vmax=2.271323211355281e-06)#¼vmin = -7.631209166640852*10**(-16) , vmax = -1.1011600610714432*10**(-18))#vmin=-1*(10**(-4)), vmax=-1*(10**(9)))
     
-    
-    #mesh.set_clim(-0.0005665265102547159,0)
-    
-    #plt.colorbar()
-    #○plt.show()
     return plt.pcolormesh(X,Y,positive_field,vmin=0,vmax=0.001396394568209751)#-0.0005665265102547159
 
-def plot_field():
-    data1 = TotalField(63)
-    data2 = TotalField(61)
-    fig = plt.figure()
-    ax = fig.add_subplot(121)
-    mesh = ax.pcolormesh(data1[0],data1[1],data1[2], cmap = cm)
-    mesh.set_clim(-0.00031837490375208625,8.478462110792762e-05)
-    ax1 = fig.add_subplot(122)
-    mesh1 = ax1.pcolormesh(data2[0],data2[1],data2[2], cmap = cm)
-    mesh1.set_clim(-0.00031837490375208625,8.478462110792762e-05)
-
-    # Visualizing colorbar part -start
-    fig.colorbar(mesh,ax=ax)
-    fig.colorbar(mesh1,ax=ax1)
-    fig.tight_layout()
-    # Visualizing colorbar part -end
-    
-    plt.show()
-    
     
 
     

@@ -26,7 +26,7 @@ def parser(text_file):
                     net = 'vdd'
                 elif each_part2[1] == 'gnd':
                     net = 'gnd'
-            if  each_part2[0] in ('NEW','ROUTED'):  
+            if  each_part2[0] == 'NEW':  
                 if each_part2[2] != '0':
                     if each_part2[5] in ('BLOCKRING','RING','STRIPE','FOLLOWPIN'):#,'FOLLOWPIN')
                         pt1 = (each_part2[1] , net , int (each_part2[7]), int(each_part2[8])) # nano
@@ -36,6 +36,18 @@ def parser(text_file):
                         elif each_part2 [12] == '*':
                             pt2 = (each_part2[1] , net , int (each_part2[11]), int(each_part2[8]))                      
                         end_points.append(pt2)
+            elif  (each_part2[0]=='+' and each_part2[1]=='ROUTED') :  
+                if each_part2[3] != '0':
+                    if each_part2[6] in ('BLOCKRING','RING','STRIPE','FOLLOWPIN'):#,'FOLLOWPIN')
+                        pt1 = (each_part2[2] , net , int (each_part2[8]), int(each_part2[9])) # nano
+                        start_points.append(pt1)
+                        if (each_part2[12])== '*' :
+                            pt2 = (each_part2[2] , net , int (each_part2[8]), int(each_part2[13]))
+                        elif each_part2 [13] == '*':
+                            pt2 = (each_part2[2] , net , int (each_part2[12]), int(each_part2[9]))                      
+                        end_points.append(pt2)
+    
+    
     return (start_points,end_points)
 
 def gridPlot (net , text_file):
@@ -161,41 +173,13 @@ def probing_points(segments,text_file,net):
     #plt.show()
 
     return x_points , y_points ,metal
-
-def probe_generator (segments_per_line , text_file , net):
-    """ save the 1st and last point of each line as probing points for resistance and voltage
-    """
-    temp = probing_points (segments_per_line , text_file , net)
-    x_coords = temp [0]
-    y_coords = temp [1]
-    metal = temp [2]
-    f = open ("FULL_AES_Voltage_probe.txt","w+")
-    for i in range(0,len(x_coords)):
-        if (i % (segments_per_line-1) == 0):
-            f.write("Probe"+str(i)+" %f %f %s %s\n" % (x_coords[i]/1000,y_coords[i]/1000,metal[i],net))
-        if ((i+1) % (segments_per_line-1) == 0):
-            f.write("Probe"+str(i)+" %f %f %s %s\n" % (x_coords[i]/1000,y_coords[i]/1000,metal[i],net))
-        #for ii in range (1,segments_per_line):
-           # print (x_coords[ii],y_coords[ii],metal[i])
-    f.close
-    ff = open ("FULL_AES_Resistance_probe.txt","w+")        
-    print (len(x_coords))
-    for i in range(0,len(x_coords)):
-        if (i % (segments_per_line-1) == 0):
-            ff.write("%f %f %s " % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i])))
-            #print ('START POINT',i, 'is ', x_coords[i]/1000)
-        if ((i+1) % (segments_per_line-1) == 0):
-            ff.write("%f %f %s SEGMENT%s\n" % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i]),str(i)))
-            #print ('END POINT',i, 'is ', x_coords[i]/1000)
-
-    ff.close    
     
     
            
-def probe_generator_segmented (points_per_line,segments_pre_line , text_file , net):
+def probe_generator_segmented (segments_pre_line , text_file , net):
     """
-    points_per_line should be a (multiple of Segments_per_line)+1 
     """
+    points_per_line = (segments_pre_line*10)+1
     temp = probing_points (points_per_line , text_file , net)
     x_coords = temp [0]
     y_coords = temp [1]
@@ -215,13 +199,13 @@ def probe_generator_segmented (points_per_line,segments_pre_line , text_file , n
     f.close
     ff = open ("FULL_AES_Resistance_probe.txt","w+")        
     print (len(x_coords))
-    for i in range(0,len(x_coords)-1):
-        if (i % ((points_per_line-1)/segments_pre_line) == 0) : #`divide segment per 20
-            if (i != (len(x_coords)-10)): ##########
-                ff.write("%f %f %s " % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i])))
-                #print ('START POINT',i, 'is ', x_coords[i]/1000)
-                start_x_coord.append(x_coords[i])
-                start_y_coord.append(y_coords[i])
+    for i in range(0,len(x_coords)):
+        if (i % ((points_per_line-1)/segments_pre_line) == 0) : 
+            ff.write("%f %f %s " % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i])))
+            #print ('START POINT',i, 'is ', x_coords[i]/1000)
+            start_x_coord.append(x_coords[i])
+            
+            start_y_coord.append(y_coords[i])
         if ((i+1) % ((points_per_line-1)/segments_pre_line) == 0):
             ff.write("%f %f %s SEGMENT%s\n" % (x_coords[i]/1000,y_coords[i]/1000,str(metal[i]),str(i)))
             #print ('END POINT',i, 'is ', x_coords[i]/1000)
@@ -231,9 +215,9 @@ def probe_generator_segmented (points_per_line,segments_pre_line , text_file , n
     x_values = [start_x_coord , end_x_coord]
     y_values = [start_y_coord , end_y_coord]    
     
-    #plt.figure(figsize=(12,12))
-    #plt.plot (x_values, y_values)
-    #plt.show()
+    plt.figure(figsize=(12,12))
+    plt.plot (x_values, y_values)
+    plt.show()
     return [x_values , y_values] 
        
     
